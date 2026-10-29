@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MediCare - Modern Medicine Reminder System. A smart healthcare mini project to track medications, schedule reminders, and monitor adherence.">
+  <title>MediCare – Smart Medicine Reminder System</title>
+  
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for healthcare graphics -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="light">
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand" id="brand-logo" role="button" tabindex="0" title="MediCare Home">
+        <div class="brand-icon-wrapper">
+          <i class="fa-solid fa-heart-pulse brand-icon"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Medi<span class="highlight">Care</span></span>
+          <span class="brand-badge">Mini Project</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="nav-menu" id="nav-menu">
+        <button class="nav-link active" data-view="home">
+          <i class="fa-solid fa-house"></i> <span>Home</span>
+        </button>
+        <button class="nav-link" data-view="dashboard">
+          <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
+        </button>
+        <button class="nav-link" data-view="add">
+          <i class="fa-solid fa-calendar-plus"></i> <span>Add Medicine</span>
+        </button>
+        <button class="nav-link" data-view="medicines">
+          <i class="fa-solid fa-pills"></i> <span>My Medicines</span>
+          <span class="counter-badge" id="nav-med-count">0</span>
+        </button>
+        <button class="nav-link" data-view="about">
+          <i class="fa-solid fa-circle-info"></i> <span>About</span>
+        </button>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="nav-actions">
+        <!-- Live Clock Display -->
+        <div class="header-clock" id="header-clock" title="Current System Time">
+          <i class="fa-regular fa-clock"></i>
+          <span id="live-clock-text">--:--:--</span>
+        </div>
+
+        <!-- Notification Permission Status -->
+        <button class="icon-btn" id="btn-toggle-notif" title="Enable / Disable Desktop Notifications" aria-label="Toggle notifications">
+          <i class="fa-regular fa-bell" id="notif-icon"></i>
+        </button>
+
+        <!-- Sound Alert Toggle -->
+        <button class="icon-btn" id="btn-toggle-sound" title="Toggle Sound Chime" aria-label="Toggle sound">
+          <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+        </button>
+
+        <!-- Test Alarm Sound Button -->
+        <button class="btn btn-alarm-test" id="btn-test-sound" title="Test medical reminder alarm sound" aria-label="Test Alarm Sound">
+          <i class="fa-solid fa-volume-high"></i> <span>Test Alarm Sound</span>
+        </button>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button class="icon-btn" id="btn-toggle-theme" title="Switch Theme (Dark / Light)" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+
+        <!-- Logged-in User Session Chip -->
+        <div class="user-nav-chip hidden" id="user-nav-chip">
+          <div class="user-avatar-sm">
+            <i class="fa-solid fa-user-doctor"></i>
+          </div>
+          <span class="user-chip-name" id="user-nav-name">User</span>
+          <button class="btn-nav-logout" id="btn-nav-logout" title="Sign out / Logout" aria-label="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+  <main class="main-content" id="main-content">
+
+    <!-- ==================== VIEW 0: USER AUTH (LOGIN / REGISTER) ==================== -->
+    <section class="view-section active" id="view-auth">
+      <div class="auth-container">
+        <div class="auth-card">
+          <!-- Auth Header with 🔐 Logo & Title -->
+          <div class="auth-header">
+            <div class="auth-icon-badge">
+              <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div class="auth-logo-title">
+              <span class="auth-lock-icon">🔐</span>
+              <span class="auth-app-name">Medicine <span class="highlight">Reminder</span></span>
+            </div>
+            <h1 class="auth-welcome-text">Welcome to Medicine Reminder</h1>
+            <p class="auth-welcome-sub">Sign in to manage medications, set smart reminders, and track your daily adherence.</p>
+          </div>
+
+          <!-- Auth Switch Tabs -->
+          <div class="auth-tabs-row" role="tablist">
+            <button class="auth-tab-btn active" id="tab-login" role="tab" aria-selected="true" aria-controls="form-login">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>
+            <button class="auth-tab-btn" id="tab-register" role="tab" aria-selected="false" aria-controls="form-register">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+          </div>
+
+          <!-- Error Alert Banner -->
+          <div class="auth-alert hidden" id="auth-alert" role="alert">
+            <i class="fa-solid fa-circle-exclamation auth-alert-icon"></i>
+            <span class="auth-alert-text" id="auth-alert-text"></span>
+          </div>
+
+          <!-- Success Alert Banner -->
+          <div class="auth-alert auth-alert-success hidden" id="auth-success-alert" role="alert">
+            <i class="fa-solid fa-circle-check auth-alert-icon"></i>
+            <span class="auth-alert-text" id="auth-success-text"></span>
+          </div>
+
+          <!-- LOGIN FORM -->
+          <form class="auth-form" id="form-login" novalidate>
+            <div class="form-group">
+              <label for="login-username" class="form-label">
+                Username or Email <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user input-icon"></i>
+                <input type="text" id="login-username" class="form-control" placeholder="Enter username or email" required autocomplete="username">
+              </div>
+              <small class="error-msg" id="err-login-username"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="login-password" class="form-label">
+                Password <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="login-password" class="form-control password-field" placeholder="Enter password" required autocomplete="current-password">
+                <button type="button" class="btn-toggle-pwd" id="btn-toggle-login-pwd" title="Show/Hide Password" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye" id="icon-login-pwd"></i>
+                </button>
+              </div>
+              <small class="error-msg" id="err-login-password"></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-auth" id="btn-login-submit">
+              <i class="fa-solid fa-right-to-bracket"></i> <span>Login</span>
+            </button>
+
+            <div class="auth-footer-prompt">
+              <span>Don't have an account?</span>
+              <button type="button" class="link-btn" id="link-goto-register">Create Account / Register</button>
+            </div>
+          </form>
+
+          <!-- REGISTER FORM -->
+          <form class="auth-form hidden" id="form-register" novalidate>
+            <div class="form-group">
+              <label for="reg-fullname" class="form-label">
+                Full Name <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-id-card input-icon"></i>
+                <input type="text" id="reg-fullname" class="form-control" placeholder="e.g., Alex Johnson" required autocomplete="name">
+              </div>
+              <small class="error-msg" id="err-reg-fullname"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-username" class="form-label">
+                Username <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user-plus input-icon"></i>
+                <input type="text" id="reg-username" class="form-control" placeholder="Choose a username" required autocomplete="username">
+              </div>
+              <small class="error-msg" id="err-reg-username"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-email" class="form-label">
+                Email Address <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope input-icon"></i>
+                <input type="email" id="reg-email" class="form-control" placeholder="e.g., alex@example.com" required autocomplete="email">
+              </div>
+              <small class="error-msg" id="err-reg-email"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-password" class="form-label">
+                Password <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="reg-password" class="form-control password-field" placeholder="Create password (min 4 chars)" required autocomplete="new-password">
+                <button type="button" class="btn-toggle-pwd" id="btn-toggle-reg-pwd" title="Show/Hide Password" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye" id="icon-reg-pwd"></i>
+                </button>
+              </div>
+              <small class="error-msg" id="err-reg-password"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-confirm-password" class="form-label">
+                Confirm Password <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-shield-check input-icon"></i>
+                <input type="password" id="reg-confirm-password" class="form-control password-field" placeholder="Re-enter password" required autocomplete="new-password">
+                <button type="button" class="btn-toggle-pwd" id="btn-toggle-reg-confirm-pwd" title="Show/Hide Password" aria-label="Toggle password visibility">
+                  <i class="fa-regular fa-eye" id="icon-reg-confirm-pwd"></i>
+                </button>
+              </div>
+              <small class="error-msg" id="err-reg-confirm-password"></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-auth" id="btn-register-submit">
+              <i class="fa-solid fa-user-plus"></i> <span>Create Account</span>
+            </button>
+
+            <div class="auth-footer-prompt">
+              <span>Already have an account?</span>
+              <button type="button" class="link-btn" id="link-goto-login">Sign In / Login</button>
+            </div>
+          </form>
+
+          <!-- Quick Demo Access Helper -->
+          <div class="auth-demo-helper">
+            <div class="demo-helper-divider"><span>Demo Account</span></div>
+            <button type="button" class="btn btn-outline btn-block demo-quick-btn" id="btn-quick-demo">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Quick Demo Login (demo / password123)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 1: HOME PAGE ==================== -->
+    <section class="view-section" id="view-home">
+      <!-- Hero Banner -->
+      <div class="hero-card">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <i class="fa-solid fa-shield-halved"></i> B.Tech Healthcare Mini Project
+          </div>
+          <h1 class="hero-title">Never miss your <span class="gradient-text">medicine</span>.</h1>
+          <p class="hero-description">
+            MediCare is your personal smart medication companion. Schedule dosages, monitor daily compliance, 
+            and receive punctual visual and audio alerts so you and your loved ones stay healthy every single day.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="hero-btn-add">
+              <i class="fa-solid fa-plus-circle"></i> Add Medicine
+            </button>
+            <button class="btn btn-outline" id="hero-btn-list">
+              <i class="fa-solid fa-list-check"></i> View Medicines
+            </button>
+            <button class="btn btn-alarm-test-hero" id="hero-btn-test-sound" title="Test medical reminder alarm sound">
+              <i class="fa-solid fa-volume-high"></i> <span>Test Alarm Sound</span>
+            </button>
+            <button class="btn btn-demo" id="hero-btn-demo" title="Preload realistic medicines for faculty demonstration">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Load Sample Data
+            </button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-pill-graphic">
+            <div class="pulse-ring"></div>
+            <div class="floating-med-card card-1">
+              <i class="fa-solid fa-capsules"></i>
+              <div>
+                <strong>Amoxicillin</strong>
+                <span>8:00 AM • Taken</span>
+              </div>
+            </div>
+            <div class="floating-med-card card-2">
+              <i class="fa-solid fa-tablets"></i>
+              <div>
+                <strong>Metformin</strong>
+                <span>2:00 PM • Scheduled</span>
+              </div>
+            </div>
+            <div class="floating-med-card card-3">
+              <i class="fa-solid fa-prescription-bottle-medical"></i>
+              <div>
+                <strong>Cough Syrup</strong>
+                <span>9:00 PM • Upcoming</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Countdown Banner for Next Dose -->
+      <div class="next-dose-banner" id="next-dose-banner">
+        <div class="next-dose-info">
+          <div class="banner-icon-box">
+            <i class="fa-solid fa-bell pulse-icon"></i>
+          </div>
+          <div>
+            <span class="banner-subtitle">UPCOMING REMINDER</span>
+            <h3 class="banner-title" id="next-dose-name">No upcoming doses scheduled</h3>
+            <p class="banner-meta" id="next-dose-meta">Add your medications to start receiving reminders</p>
+          </div>
+        </div>
+        <div class="next-dose-timer">
+          <div class="timer-unit">
+            <span class="timer-num" id="timer-hours">00</span>
+            <span class="timer-label">Hours</span>
+          </div>
+          <span class="timer-separator">:</span>
+          <div class="timer-unit">
+            <span class="timer-num" id="timer-minutes">00</span>
+            <span class="timer-label">Minutes</span>
+          </div>
+          <span class="timer-separator">:</span>
+          <div class="timer-unit">
+            <span class="timer-num" id="timer-seconds">00</span>
+            <span class="timer-label">Seconds</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Schedule Section -->
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Today's Reminders</h2>
+            <p class="section-subtitle" id="today-date-text">Scheduled doses for today</p>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-sm btn-outline filter-today-btn active" data-filter="all" id="home-filter-all">All</button>
+            <button class="btn btn-sm btn-outline filter-today-btn" data-filter="pending" id="home-filter-pending">Pending</button>
+            <button class="btn btn-sm btn-outline filter-today-btn" data-filter="taken" id="home-filter-taken">Taken</button>
+          </div>
+        </div>
+
+        <!-- Today's Cards Grid -->
+        <div class="medicine-grid" id="today-medicines-grid">
+          <!-- Dynamically populated via script.js -->
+        </div>
+
+        <!-- Empty State for Today -->
+        <div class="empty-state hidden" id="today-empty-state">
+          <div class="empty-state-icon">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <h3>No medicines scheduled for today</h3>
+          <p>You have no scheduled doses for today or all scheduled medicines are marked as taken!</p>
+          <button class="btn btn-primary btn-sm" id="empty-add-btn">
+            <i class="fa-solid fa-plus"></i> Add New Medicine
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: DASHBOARD ==================== -->
+    <section class="view-section" id="view-dashboard">
+      <!-- User Welcome & Dashboard Session Banner -->
+      <div class="dashboard-welcome-banner" id="dashboard-welcome-banner">
+        <div class="welcome-user-left">
+          <div class="welcome-avatar">
+            <i class="fa-solid fa-user-doctor"></i>
+          </div>
+          <div class="welcome-text-col">
+            <h2 class="welcome-greeting">Welcome to Medicine Reminder, <span id="dash-username" class="highlight-user">User</span>! 👋</h2>
+            <p class="welcome-subtext">Manage medication schedules, check compliance analytics, and verify audio reminders.</p>
+          </div>
+        </div>
+        <div class="welcome-user-actions">
+          <button class="btn btn-alarm-test btn-sm" id="dash-btn-test-sound" title="Test medical reminder alarm sound" aria-label="Test Alarm Sound">
+            <i class="fa-solid fa-volume-high"></i> <span>Test Alarm Sound</span>
+          </button>
+          <button class="btn btn-outline btn-sm text-danger" id="dash-btn-logout" title="Sign out of your account" aria-label="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="dashboard-header">
+        <div>
+          <h1 class="page-title">Adherence Dashboard</h1>
+          <p class="page-subtitle">Track your medication statistics, compliance rate, and dosage history.</p>
+        </div>
+        <div class="dashboard-controls">
+          <button class="btn btn-sm btn-outline" id="btn-export-data" title="Export medication schedule as JSON">
+            <i class="fa-solid fa-download"></i> Backup Data
+          </button>
+          <button class="btn btn-sm btn-outline text-danger" id="btn-reset-data" title="Reset all medicines">
+            <i class="fa-solid fa-trash-can"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- 5 Summary KPI Stat Cards -->
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent-color: #0284c7;">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-prescription-bottle"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Medicines</span>
+            <h2 class="stat-value" id="stat-total">0</h2>
+            <span class="stat-badge">In system</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent-color: #6366f1;">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-calendar-day"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Today's Doses</span>
+            <h2 class="stat-value" id="stat-today">0</h2>
+            <span class="stat-badge">Scheduled</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent-color: #f59e0b;">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Upcoming</span>
+            <h2 class="stat-value" id="stat-upcoming">0</h2>
+            <span class="stat-badge">Pending today</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent-color: #10b981;">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Completed Doses</span>
+            <h2 class="stat-value" id="stat-completed">0</h2>
+            <span class="stat-badge text-success">Marked as taken</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--accent-color: #ef4444;">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-circle-exclamation"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Missed / Overdue</span>
+            <h2 class="stat-value" id="stat-missed">0</h2>
+            <span class="stat-badge text-danger">Action required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Visual Analytics Section -->
+      <div class="dashboard-details-grid">
+        <!-- Daily Compliance / Adherence Rate Card -->
+        <div class="panel-card adherence-card">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-chart-line"></i> Today's Adherence Rate</h3>
+            <span class="panel-tag" id="adherence-status-tag">On Track</span>
+          </div>
+          <div class="adherence-content">
+            <div class="progress-ring-container">
+              <svg class="progress-ring" width="160" height="160">
+                <circle class="progress-ring-circle-bg" stroke="#e2e8f0" stroke-width="12" fill="transparent" r="64" cx="80" cy="80"/>
+                <circle class="progress-ring-circle" id="adherence-circle" stroke="#10b981" stroke-width="12" stroke-dasharray="402.12" stroke-dashoffset="402.12" stroke-linecap="round" fill="transparent" r="64" cx="80" cy="80"/>
+              </svg>
+              <div class="progress-ring-text">
+                <span class="progress-percentage" id="adherence-percentage">0%</span>
+                <span class="progress-label">Compliance</span>
+              </div>
+            </div>
+            <div class="adherence-notes">
+              <h4 id="adherence-heading">Maintain Your Schedule</h4>
+              <p id="adherence-desc">Take your scheduled doses on time to improve your daily treatment consistency.</p>
+              <div class="adherence-metrics">
+                <div><strong id="adh-taken-count">0</strong> Taken</div>
+                <div><strong id="adh-pending-count">0</strong> Pending</div>
+                <div><strong id="adh-missed-count">0</strong> Missed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medicine Type Breakdown Card -->
+        <div class="panel-card distribution-card">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-shapes"></i> Dosage Form Breakdown</h3>
+            <span class="panel-tag">Types</span>
+          </div>
+          <div class="types-breakdown-list" id="types-breakdown-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: ADD / EDIT MEDICINE ==================== -->
+    <section class="view-section" id="view-add">
+      <div class="form-container">
+        <div class="form-header">
+          <div class="form-header-icon">
+            <i class="fa-solid fa-notes-medical" id="form-icon"></i>
+          </div>
+          <div>
+            <h1 class="page-title" id="form-title">Add New Medicine</h1>
+            <p class="page-subtitle" id="form-subtitle">Fill in medicine details to receive timely smart reminders.</p>
+          </div>
+        </div>
+
+        <!-- Medicine Entry Form -->
+        <form class="med-form" id="med-form" novalidate>
+          <input type="hidden" id="edit-med-id" value="">
+
+          <div class="form-grid">
+            <!-- Medicine Name -->
+            <div class="form-group col-span-2">
+              <label for="med-name" class="form-label">
+                Medicine Name <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-prescription input-icon"></i>
+                <input type="text" id="med-name" class="form-control" placeholder="e.g., Paracetamol, Amoxicillin, Metformin" required>
+              </div>
+              <small class="error-msg" id="err-name"></small>
+            </div>
+
+            <!-- Dosage -->
+            <div class="form-group">
+              <label for="med-dosage" class="form-label">
+                Dosage <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-scale-balanced input-icon"></i>
+                <input type="text" id="med-dosage" class="form-control" placeholder="e.g., 500 mg, 1 Tablet, 10 ml" required>
+              </div>
+              <small class="error-msg" id="err-dosage"></small>
+            </div>
+
+            <!-- Medicine Type -->
+            <div class="form-group">
+              <label for="med-type" class="form-label">
+                Medicine Type <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-capsules input-icon"></i>
+                <select id="med-type" class="form-control" required>
+                  <option value="tablet">💊 Tablet</option>
+                  <option value="capsule">💊 Capsule</option>
+                  <option value="syrup">🧪 Syrup / Liquid</option>
+                  <option value="injection">💉 Injection</option>
+                  <option value="drops">💧 Drops (Eye / Ear)</option>
+                  <option value="inhaler">💨 Inhaler</option>
+                  <option value="ointment">🧴 Ointment / Cream</option>
+                  <option value="other">📦 Other</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Schedule Date -->
+            <div class="form-group">
+              <label for="med-date" class="form-label">
+                Start Date <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-regular fa-calendar input-icon"></i>
+                <input type="date" id="med-date" class="form-control" required>
+              </div>
+              <small class="error-msg" id="err-date"></small>
+            </div>
+
+            <!-- Schedule Time -->
+            <div class="form-group">
+              <label for="med-time" class="form-label">
+                Reminder Time <span class="required">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-regular fa-clock input-icon"></i>
+                <input type="time" id="med-time" class="form-control" required>
+              </div>
+              <small class="error-msg" id="err-time"></small>
+            </div>
+
+            <!-- Frequency -->
+            <div class="form-group">
+              <label for="med-frequency" class="form-label">
+                Frequency
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-rotate input-icon"></i>
+                <select id="med-frequency" class="form-control">
+                  <option value="Once Daily">Once Daily</option>
+                  <option value="Twice Daily">Twice Daily (Morning & Night)</option>
+                  <option value="Thrice Daily">Thrice Daily (TID)</option>
+                  <option value="Every 4 Hours">Every 4 Hours</option>
+                  <option value="Every 6 Hours">Every 6 Hours</option>
+                  <option value="Every 8 Hours">Every 8 Hours</option>
+                  <option value="Every 12 Hours">Every 12 Hours</option>
+                  <option value="Weekly">Once a Week</option>
+                  <option value="As Needed (SOS)">As Needed (SOS)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Meal Instructions -->
+            <div class="form-group">
+              <label for="med-instructions" class="form-label">
+                Food / Meal Timing
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-utensils input-icon"></i>
+                <select id="med-instructions" class="form-control">
+                  <option value="After Meal">After Meal</option>
+                  <option value="Before Meal">Before Meal</option>
+                  <option value="With Meal">With Food / Meal</option>
+                  <option value="Empty Stomach">Empty Stomach</option>
+                  <option value="Bedtime">Before Bedtime</option>
+                  <option value="Anytime">Anytime / Not Specified</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Priority -->
+            <div class="form-group col-span-2">
+              <label class="form-label">Priority Level</label>
+              <div class="priority-selector">
+                <label class="priority-opt">
+                  <input type="radio" name="med-priority" value="normal" checked>
+                  <span class="priority-pill normal">
+                    <i class="fa-regular fa-circle-check"></i> Standard Priority
+                  </span>
+                </label>
+                <label class="priority-opt">
+                  <input type="radio" name="med-priority" value="high">
+                  <span class="priority-pill high">
+                    <i class="fa-solid fa-triangle-exclamation"></i> High Priority (Critical Dose)
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group col-span-2">
+              <label for="med-notes" class="form-label">
+                Doctor Instructions & Notes
+              </label>
+              <div class="input-wrapper">
+                <textarea id="med-notes" class="form-control textarea" rows="3" placeholder="e.g., Take with a full glass of warm water, do not crush tablet, prescribed by Dr. Sharma."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="btn-save-med">
+              <i class="fa-solid fa-floppy-disk"></i> <span id="btn-save-text">Save Medicine</span>
+            </button>
+            <button type="button" class="btn btn-outline" id="btn-cancel-edit">
+              <i class="fa-solid fa-xmark"></i> Clear / Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: MY MEDICINES ==================== -->
+    <section class="view-section" id="view-medicines">
+      <div class="page-header-row">
+        <div>
+          <h1 class="page-title">My Medicines</h1>
+          <p class="page-subtitle">Manage, edit, search, and monitor your complete medicine schedule.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-add-from-list">
+          <i class="fa-solid fa-plus"></i> Add New Medicine
+        </button>
+      </div>
+
+      <!-- Search & Filters Toolbar -->
+      <div class="toolbar-card">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="search-input" placeholder="Search medicines by name, dosage, or notes..." aria-label="Search medicines">
+          <button class="clear-search-btn hidden" id="clear-search-btn" aria-label="Clear search">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="filters-row">
+          <!-- Status Filter -->
+          <div class="filter-group">
+            <label for="filter-status"><i class="fa-solid fa-filter"></i> Status:</label>
+            <select id="filter-status" class="filter-select">
+              <option value="all">All Medicines</option>
+              <option value="pending">Pending</option>
+              <option value="taken">Marked as Taken</option>
+              <option value="missed">Missed / Overdue</option>
+              <option value="high">High Priority</option>
+            </select>
+          </div>
+
+          <!-- Type Filter -->
+          <div class="filter-group">
+            <label for="filter-type"><i class="fa-solid fa-shapes"></i> Type:</label>
+            <select id="filter-type" class="filter-select">
+              <option value="all">All Types</option>
+              <option value="tablet">Tablets</option>
+              <option value="capsule">Capsules</option>
+              <option value="syrup">Syrups</option>
+              <option value="injection">Injections</option>
+              <option value="drops">Drops</option>
+              <option value="inhaler">Inhalers</option>
+              <option value="ointment">Ointments</option>
+            </select>
+          </div>
+
+          <!-- Date Filter -->
+          <div class="filter-group">
+            <label for="filter-date"><i class="fa-regular fa-calendar"></i> Date:</label>
+            <input type="date" id="filter-date" class="filter-select filter-date-input">
+            <button class="btn-clear-date hidden" id="btn-clear-date" title="Clear date filter">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Sort Filter -->
+          <div class="filter-group">
+            <label for="sort-by"><i class="fa-solid fa-arrow-down-wide-short"></i> Sort:</label>
+            <select id="sort-by" class="filter-select">
+              <option value="time-asc">Time (Earliest first)</option>
+              <option value="time-desc">Time (Latest first)</option>
+              <option value="name-asc">Name (A to Z)</option>
+              <option value="name-desc">Name (Z to A)</option>
+              <option value="priority">Priority First</option>
+            </select>
+          </div>
+
+          <!-- View Toggle (Grid vs Table) -->
+          <div class="view-mode-toggle">
+            <button class="view-mode-btn active" id="btn-view-cards" title="Cards View">
+              <i class="fa-solid fa-grip"></i>
+            </button>
+            <button class="view-mode-btn" id="btn-view-table" title="Table View">
+              <i class="fa-solid fa-table-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filter Chips / Status summary -->
+      <div class="filter-status-summary">
+        <span id="filtered-count-text">Showing 0 medicines</span>
+        <button class="reset-filters-btn hidden" id="reset-filters-btn">Clear All Filters</button>
+      </div>
+
+      <!-- Cards Grid View Container -->
+      <div class="medicine-grid" id="all-medicines-grid">
+        <!-- Dynamically populated via script.js -->
+      </div>
+
+      <!-- Table View Container -->
+      <div class="table-container hidden" id="medicines-table-wrapper">
+        <table class="medicines-table" id="medicines-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Medicine</th>
+              <th>Dosage</th>
+              <th>Schedule</th>
+              <th>Frequency</th>
+              <th>Instructions</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="medicines-table-body">
+            <!-- Dynamically populated via script.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State for Search/List -->
+      <div class="empty-state hidden" id="all-empty-state">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <h3 id="empty-title">No medicines found</h3>
+        <p id="empty-description">Try adjusting your filters or search query, or add your first medicine.</p>
+        <button class="btn btn-primary btn-sm" id="btn-empty-add-action">
+          <i class="fa-solid fa-plus"></i> Add Medicine
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 5: ABOUT ==================== -->
+    <section class="view-section" id="view-about">
+      <div class="about-container">
+        <!-- Hero card for Project -->
+        <div class="about-hero">
+          <div class="about-badge">B.Tech Engineering Mini Project</div>
+          <h1 class="about-title">MediCare – Smart Medicine Reminder System</h1>
+          <p class="about-lead">
+            An automated, browser-native assistive healthcare web application designed to solve patient 
+            medication non-adherence through proactive scheduling, real-time auditory chimes, and browser notifications.
+          </p>
+        </div>
+
+        <div class="about-grid">
+          <!-- Card 1: Project Objective -->
+          <div class="about-card">
+            <div class="about-icon-box" style="--acc: #0284c7;">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <h3>Project Objective</h3>
+            <p>
+              According to the World Health Organization (WHO), over 50% of patients fail to take prescribed 
+              medications correctly. The goal of this mini project is to build an intuitive, zero-dependency, 
+              accessible reminder platform that runs natively in any standard web browser without demanding 
+              cloud logins or external backend servers.
+            </p>
+          </div>
+
+          <!-- Card 2: Technologies Used -->
+          <div class="about-card">
+            <div class="about-icon-box" style="--acc: #10b981;">
+              <i class="fa-solid fa-code"></i>
+            </div>
+            <h3>Technology Stack</h3>
+            <ul class="tech-list">
+              <li><strong>HTML5:</strong> Semantic layout, accessible input forms, dialog elements.</li>
+              <li><strong>CSS3:</strong> Custom design system, CSS variables, flexbox, CSS grid, dark mode styling.</li>
+              <li><strong>JavaScript (ES6+):</strong> Pure Vanilla JS with no external frameworks.</li>
+              <li><strong>LocalStorage API:</strong> Client-side persistent key-value data storage.</li>
+              <li><strong>Web Audio API:</strong> Synthesized loud, clear 3-beep medical alert chime without external audio files. <button class="btn btn-xs btn-outline btn-inline-test" id="about-btn-test-sound" title="Test medical chime"><i class="fa-solid fa-volume-high"></i> Test Alarm Sound</button></li>
+              <li><strong>Notifications API:</strong> Native OS-level reminder notification popups.</li>
+            </ul>
+          </div>
+
+          <!-- Card 3: Key Features -->
+          <div class="about-card">
+            <div class="about-icon-box" style="--acc: #6366f1;">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <h3>Core Functionalities</h3>
+            <ul class="tech-list">
+              <li>Real-time background polling interval checking scheduled doses every 5 seconds.</li>
+              <li>Interactive reminder popup modal featuring 10-minute snooze and instant "Mark as Taken".</li>
+              <li>Comprehensive dashboard calculating real-time adherence rate and breakdown by dosage form.</li>
+              <li>Robust input validation preventing invalid or empty entries.</li>
+              <li>Full search, multi-criteria filtering, and column sorting capabilities.</li>
+              <li>100% responsive design across smartphones, tablets, laptops, and 4K displays.</li>
+            </ul>
+          </div>
+
+          <!-- Card 4: How LocalStorage Works -->
+          <div class="about-card">
+            <div class="about-icon-box" style="--acc: #f59e0b;">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <h3>Client-side Storage Engine</h3>
+            <p>
+              MediCare operates entirely offline using browser <code>LocalStorage</code>. Medication profiles 
+              are serialized into structured JSON objects and safely queried upon page initialization. All user edits, 
+              deletions, snooze cycles, and adherence marks persist indefinitely across page reloads and browser sessions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Faculty Demonstration Notes -->
+        <div class="faculty-demo-box">
+          <div class="demo-box-header">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <h4>Faculty Demonstration Guide</h4>
+          </div>
+          <p>
+            To demonstrate this project to your professor or examiner:
+          </p>
+          <ol class="demo-steps">
+            <li>Click <strong>"Load Sample Data"</strong> from the Home view to instantly populate realistic morning, afternoon, and evening medications.</li>
+            <li>Go to <strong>"Add Medicine"</strong>, enter a test dose scheduled 1 minute ahead of the current live clock time, and click <strong>"Save Medicine"</strong>.</li>
+            <li>Wait for the clock to reach that minute. Observe the <strong>interactive reminder modal</strong>, hear the <strong>synthesized audio chime</strong>, and see the <strong>desktop notification</strong> trigger!</li>
+            <li>Test clicking <strong>"Snooze 10 Mins"</strong> or <strong>"Mark as Taken"</strong>.</li>
+            <li>Visit the <strong>Dashboard</strong> to inspect how the Compliance Percentage and stat counters update automatically.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== REMINDER ALARM MODAL ==================== -->
+  <div class="modal-overlay hidden" id="reminder-modal" role="dialog" aria-modal="true" aria-labelledby="reminder-title">
+    <div class="modal-card alarm-modal-card">
+      <div class="alarm-header">
+        <div class="alarm-symbol-banner">
+          <span class="alarm-symbol-badge">
+            <span class="symbol-icon">🔔</span>
+            <span class="symbol-text">Medicine Reminder</span>
+            <span class="symbol-icon">🔊</span>
+          </span>
+        </div>
+        <div class="alarm-bell-icon" id="alarm-bell-icon">
+          <i class="fa-solid fa-bell fa-shake"></i>
+        </div>
+        <div class="alarm-audio-status">
+          <i class="fa-solid fa-volume-high"></i>
+          <span>Loud Medical Reminder Chime Active</span>
+          <span class="alarm-audio-wave">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </span>
+        </div>
+        <h2 class="alarm-title" id="reminder-title">💊 Time to take your medicine</h2>
+        <p class="alarm-time-tag" id="alarm-time-display">--:--</p>
+      </div>
+
+      <div class="alarm-body">
+        <div class="alarm-med-info">
+          <div class="alarm-type-icon" id="alarm-type-icon">
+            <i class="fa-solid fa-pills"></i>
+          </div>
+          <div>
+            <h3 class="alarm-med-name" id="alarm-med-name">Medicine Name</h3>
+            <p class="alarm-med-dosage" id="alarm-med-dosage">Dosage: 500mg</p>
+          </div>
+        </div>
+
+        <div class="alarm-details-grid">
+          <div class="alarm-detail-item">
+            <span class="detail-label">Instruction</span>
+            <span class="detail-value" id="alarm-instructions">After Meal</span>
+          </div>
+          <div class="alarm-detail-item">
+            <span class="detail-label">Frequency</span>
+            <span class="detail-value" id="alarm-frequency">Once Daily</span>
+          </div>
+        </div>
+
+        <div class="alarm-notes-box" id="alarm-notes-container">
+          <i class="fa-solid fa-info-circle"></i>
+          <span id="alarm-notes">Take with water.</span>
+        </div>
+      </div>
+
+      <div class="alarm-actions">
+        <button class="btn btn-warning btn-lg" id="btn-alarm-snooze">
+          <i class="fa-solid fa-bell-slash"></i> <span>🔕 Snooze</span>
+        </button>
+        <button class="btn btn-success btn-lg" id="btn-alarm-take">
+          <i class="fa-solid fa-check"></i> <span>✅ Mark as Taken</span>
+        </button>
+        <button class="btn btn-outline" id="btn-alarm-dismiss">
+          <i class="fa-solid fa-xmark"></i> Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DELETE CONFIRMATION MODAL ==================== -->
+  <div class="modal-overlay hidden" id="delete-modal" role="dialog" aria-modal="true">
+    <div class="modal-card confirm-modal-card">
+      <div class="confirm-icon-box text-danger">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <h3 id="delete-modal-title">Delete Medicine?</h3>
+      <p id="delete-modal-msg">Are you sure you want to permanently delete this medicine from your schedule? This action cannot be undone.</p>
+      <div class="modal-btn-row">
+        <button class="btn btn-outline" id="btn-cancel-delete">Cancel</button>
+        <button class="btn btn-danger" id="btn-confirm-delete">
+          <i class="fa-solid fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Main JavaScript Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
